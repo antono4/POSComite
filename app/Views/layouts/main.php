@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/select2/css/select2.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/toastr/toastr.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/adminlte/dist/css/adminlte.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/pos-theme.css') ?>">
     <?= $this->renderSection('css') ?>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -28,13 +30,21 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item d-none d-sm-flex align-items-center mr-2">
+                <span class="text-muted" style="font-size:13px"><i class="far fa-calendar-alt mr-1"></i><?= date('d M Y') ?></span>
+            </li>
             <li class="nav-item dropdown">
-                <a class="nav-link" data-toggle="dropdown" href="#">
-                    <i class="far fa-user"></i> <?= esc(session()->get('nama')) ?>
-                    <span class="badge badge-info"><?= esc(ucfirst(session()->get('role'))) ?></span>
+                <a class="nav-link" data-toggle="dropdown" href="#" style="display:flex;align-items:center;gap:8px">
+                    <span style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px">
+                        <?= strtoupper(substr(session()->get('nama'), 0, 1)) ?>
+                    </span>
+                    <span class="d-none d-sm-inline"><?= esc(session()->get('nama')) ?></span>
+                    <span class="badge user-badge"><?= esc(ucfirst(session()->get('role'))) ?></span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a href="<?= base_url('logout') ?>" class="dropdown-item text-danger">
+                <div class="dropdown-menu dropdown-menu-right" style="border-radius:12px;border:none;box-shadow:0 12px 32px rgba(0,0,0,.15)">
+                    <span class="dropdown-item-text text-muted" style="font-size:12px">Login sebagai <b><?= esc(session()->get('username')) ?></b></span>
+                    <div class="dropdown-divider"></div>
+                    <a href="<?= base_url('logout') ?>" class="dropdown-item text-danger" style="border-radius:8px">
                         <i class="fas fa-sign-out-alt mr-2"></i> Logout
                     </a>
                 </div>
@@ -45,7 +55,7 @@
     <!-- Sidebar -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a href="<?= base_url('dashboard') ?>" class="brand-link text-center">
-            <span class="brand-text font-weight-bold"><i class="fas fa-store"></i> <?= esc(pengaturan('nama_toko', 'POS Comite')) ?></span>
+            <span class="brand-text font-weight-bold"><i class="fas fa-cash-register mr-1"></i> <?= esc(pengaturan('nama_toko', 'POS Comite')) ?></span>
         </a>
         <div class="sidebar">
             <nav class="mt-2">
@@ -162,12 +172,14 @@
 <script src="<?= base_url('assets/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/select2/js/select2.full.min.js') ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/toastr/toastr.min.js') ?>"></script>
+<script src="<?= base_url('assets/adminlte/plugins/sweetalert2/sweetalert2.min.js') ?>"></script>
 <script src="<?= base_url('assets/adminlte/plugins/chart.js/Chart.min.js') ?>"></script>
 <script src="<?= base_url('assets/adminlte/dist/js/adminlte.min.js') ?>"></script>
 <script>
 $(function () {
-    $('.datatable').DataTable({responsive: true, autoWidth: false});
+    $('.datatable').DataTable({responsive: true, autoWidth: false, pageLength: 10, lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Semua']]});
     $('.select2').select2();
+    toastr.options = {closeButton: true, progressBar: true, positionClass: 'toast-top-right', timeOut: 4000};
     <?php if (session()->getFlashdata('success')): ?>
     toastr.success('<?= session()->getFlashdata('success') ?>');
     <?php endif; ?>
@@ -175,8 +187,20 @@ $(function () {
     toastr.error('<?= session()->getFlashdata('error') ?>');
     <?php endif; ?>
 });
-function confirmHapus(url) {
-    if (confirm('Yakin ingin menghapus data ini?')) window.location.href = url;
+function confirmHapus(url, label) {
+    Swal.fire({
+        title: 'Hapus data ini?',
+        text: label || 'Data yang dihapus tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#eb3349',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-trash mr-1"></i> Ya, hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) window.location.href = url;
+    });
 }
 </script>
 <?= $this->renderSection('js') ?>

@@ -5,33 +5,65 @@
     <title>Struk <?= esc($penjualan['no_invoice']) ?></title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Courier New', monospace; font-size: 12px; width: 80mm; margin: 0 auto; padding: 10px; }
+        body {
+            
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 14px 10px;
+            background: #fff;
+        }
+        .header-logo {
+            width: 46px; height: 46px; border-radius: 12px;
+            background: #1e1e2d; color: #fff; margin: 0 auto 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: bold;
+        }
         .center { text-align: center; }
-        .line { border-top: 1px dashed #000; margin: 6px 0; }
+        .line { border-top: 1px dashed #000; margin: 7px 0; }
         table { width: 100%; border-collapse: collapse; }
         .right { text-align: right; }
         .bold { font-weight: bold; }
         .item-name { padding-top: 4px; }
+        .total-row td { font-size: 14px; font-weight: bold; padding-top: 4px; }
+        .footer-box {
+            border: 1px dashed #000; border-radius: 6px;
+            margin-top: 10px; padding: 8px; text-align: center;
+        }
+        .no-print {
+            position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 10;
+        }
+        .no-print button {
+            border: none; border-radius: 8px; padding: 9px 18px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+        }
+        .btn-print { background: linear-gradient(135deg,#11998e,#38ef7d); color: #fff; }
+        .btn-close { background: #1e1e2d; color: #fff; }
         @media print {
             .no-print { display: none; }
             body { width: auto; }
         }
+        @page { margin: 0; }
     </style>
 </head>
 <body onload="window.print()">
-    <div class="no-print" style="margin-bottom:10px;text-align:center">
-        <button onclick="window.print()">🖨️ Cetak</button>
-        <button onclick="window.close()">Tutup</button>
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak Struk</button>
+        <button class="btn-close" onclick="window.close()">✖ Tutup</button>
     </div>
 
+    <div class="header-logo">P</div>
     <div class="center">
-        <div class="bold" style="font-size:16px"><?= esc(pengaturan('nama_toko', 'POS Comite')) ?></div>
-        <div><?= esc(pengaturan('alamat')) ?></div>
+        <div class="bold" style="font-size:17px;letter-spacing:.5px"><?= esc(pengaturan('nama_toko', 'POS Comite')) ?></div>
+        <div style="margin-top:3px"><?= esc(pengaturan('alamat')) ?></div>
         <div>Telp: <?= esc(pengaturan('telepon')) ?></div>
     </div>
     <div class="line"></div>
     <table>
-        <tr><td>No</td><td class="right"><?= esc($penjualan['no_invoice']) ?></td></tr>
+        <tr><td>No. Invoice</td><td class="right bold"><?= esc($penjualan['no_invoice']) ?></td></tr>
         <tr><td>Tanggal</td><td class="right"><?= date('d/m/Y H:i', strtotime($penjualan['tanggal'])) ?></td></tr>
         <tr><td>Kasir</td><td class="right"><?= esc($kasir['nama'] ?? '-') ?></td></tr>
         <tr><td>Pelanggan</td><td class="right"><?= esc($pelanggan['nama'] ?? 'Umum') ?></td></tr>
@@ -55,14 +87,13 @@
         <?php if ($penjualan['pajak'] > 0): ?>
         <tr><td>Pajak</td><td class="right">+<?= number_format($penjualan['pajak'], 0, ',', '.') ?></td></tr>
         <?php endif; ?>
-        <tr class="bold"><td>TOTAL</td><td class="right"><?= number_format($penjualan['total'], 0, ',', '.') ?></td></tr>
+        <tr class="total-row"><td>TOTAL</td><td class="right">Rp <?= number_format($penjualan['total'], 0, ',', '.') ?></td></tr>
         <tr><td>Bayar (<?= strtoupper($penjualan['metode_bayar']) ?>)</td><td class="right"><?= number_format($penjualan['bayar'], 0, ',', '.') ?></td></tr>
         <tr><td>Kembali</td><td class="right"><?= number_format($penjualan['kembali'], 0, ',', '.') ?></td></tr>
     </table>
-    <div class="line"></div>
-    <div class="center">
-        <div><?= esc(pengaturan('footer_struk', 'Terima kasih!')) ?></div>
-        <div style="margin-top:4px">Dicetak: <?= date('d/m/Y H:i') ?></div>
+    <div class="footer-box">
+        <div class="bold"><?= esc(pengaturan('footer_struk', 'Terima kasih!')) ?></div>
+        <div style="margin-top:3px">Dicetak: <?= date('d/m/Y H:i') ?></div>
     </div>
 </body>
 </html>
