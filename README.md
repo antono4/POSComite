@@ -1,1 +1,30 @@
-Last updated: 2026-09-02 08:08:09 WIB
+# POSComite
+
+
+
+## 📋 Overview
+
+This repository contains **2141 files** and is built with the following technologies:
+
+PHP
+
+## 🚀 Quick Start
+
+```bash
+php -S localhost:8000
+```
+
+## ✨ Features
+
+- 📝 Auto-generated documentation
+
+## 🛠️ Technologies
+
+PHP
+
+## 📄 License
+
+MIT License
+
+---
+*Last updated: 2026-09-02 08:16:51 WIB*
